@@ -6,11 +6,18 @@ use nom::AsChar;
 use serde::{Deserialize, Serialize};
 
 use crate::char::{is_alpha_lower, is_alpha_upper};
-use crate::{In, Res};
+use crate::validation::Validation;
+use crate::{In, Res, ValidRes};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Ident {
     name: String,
+}
+
+impl Validation for Ident {
+    fn check(&self) -> ValidRes<()> {
+        Ok(())
+    }
 }
 
 impl Ident {
@@ -23,7 +30,7 @@ impl Ident {
     }
 }
 
-pub fn top_ident(input: In) -> Res<Ident> {
+pub(crate) fn top_ident(input: In) -> Res<Ident> {
     map(
         pair(
             verify(anychar, |c: &char| is_alpha_upper(c)),
@@ -33,7 +40,7 @@ pub fn top_ident(input: In) -> Res<Ident> {
     )(input)
 }
 
-pub fn ident(input: In) -> Res<Ident> {
+pub(crate) fn ident(input: In) -> Res<Ident> {
     map(
         pair(
             verify(anychar, |c: &char| is_alpha_lower(c)),

@@ -9,13 +9,13 @@ use nom_supreme::tag::complete::tag;
 use crate::char::is_digit;
 use crate::{In, Res};
 
-pub fn number(input: In) -> Res<u64> {
+pub(crate) fn number(input: In) -> Res<u64> {
     map_res(take_while(is_digit), |str: &str| {
         str.parse().map_err(|e| nom::Err::Failure(e))
     })(input)
 }
 
-pub fn signed_number(input: In) -> Res<i64> {
+pub(crate) fn signed_number(input: In) -> Res<i64> {
     map_res(
         pair(
             opt(alt((value(-1, tag("-")), value(1, tag("+"))))),

@@ -10,7 +10,8 @@ use crate::char::{space, space_tag};
 use crate::field::{top_field, TopField};
 use crate::ident::{ident, top_ident, Ident};
 use crate::number::number;
-use crate::{In, Res};
+use crate::validation::Validation;
+use crate::{In, Res, ValidRes};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Module {
@@ -36,7 +37,7 @@ pub enum HeaderKey {
     NamedNumber(Ident, u64),
 }
 
-pub fn module(input: In) -> Res<Module> {
+pub(crate) fn module(input: In) -> Res<Module> {
     let p = tuple((
         delimited(space, top_ident, space),
         opt(module_header),
@@ -55,7 +56,7 @@ pub fn module(input: In) -> Res<Module> {
     })(input)
 }
 
-pub fn module_header(input: In) -> Res<ModuleHeader> {
+fn module_header(input: In) -> Res<ModuleHeader> {
     map(
         delimited(
             space_tag("{"),
@@ -66,7 +67,7 @@ pub fn module_header(input: In) -> Res<ModuleHeader> {
     )(input)
 }
 
-pub fn header_key(input: In) -> Res<HeaderKey> {
+fn header_key(input: In) -> Res<HeaderKey> {
     let named_number = map(
         pair(
             ident,
@@ -79,9 +80,39 @@ pub fn header_key(input: In) -> Res<HeaderKey> {
     alt((named_number, named, num))(input)
 }
 
-pub fn module_body(input: In) -> Res<ModuleBody> {
+fn module_body(input: In) -> Res<ModuleBody> {
     map(
         separated_list0(space, top_field).context("module body"),
         |top_fields| ModuleBody { top_fields },
     )(input)
+}
+
+impl Validation for Module {
+    fn check(&self) -> ValidRes<()> {
+        self.name.check()?;
+        self.header.check()?;
+        self.body.check()
+    }
+}
+
+impl Validation for ModuleHeader {
+    fn check(&self) -> ValidRes<()> {
+        self.keys.check()
+    }
+}
+
+impl Validation for ModuleBody {
+    fn check(&self) -> ValidRes<()> {
+        self.top_fields.check()
+    }
+}
+
+impl Validation for HeaderKey {
+    fn check(&self) -> ValidRes<()> {
+        match self {
+            HeaderKey::Named(name) => name.check(),
+            HeaderKey::Number(_) => Ok(()),
+            HeaderKey::NamedNumber(name, _) => name.check(),
+        }
+    }
 }
