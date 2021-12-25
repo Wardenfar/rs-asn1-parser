@@ -3,17 +3,18 @@ use nom::character::complete::anychar;
 use nom::combinator::{map, verify};
 use nom::sequence::pair;
 use nom::AsChar;
+use serde::{Deserialize, Serialize};
 
 use crate::char::{is_alpha_lower, is_alpha_upper};
 use crate::{In, Res};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Ident {
     name: String,
 }
 
 impl Ident {
-    pub(crate) fn new<S: Into<String>>(name: S) -> Self {
+    pub fn new<S: Into<String>>(name: S) -> Self {
         Self { name: name.into() }
     }
 
@@ -22,7 +23,7 @@ impl Ident {
     }
 }
 
-pub(crate) fn top_ident(input: In) -> Res<Ident> {
+pub fn top_ident(input: In) -> Res<Ident> {
     map(
         pair(
             verify(anychar, |c: &char| is_alpha_upper(c)),
@@ -32,7 +33,7 @@ pub(crate) fn top_ident(input: In) -> Res<Ident> {
     )(input)
 }
 
-pub(crate) fn ident(input: In) -> Res<Ident> {
+pub fn ident(input: In) -> Res<Ident> {
     map(
         pair(
             verify(anychar, |c: &char| is_alpha_lower(c)),
@@ -48,28 +49,27 @@ fn is_ident(c: char) -> bool {
 
 #[cfg(test)]
 mod tests {
+    use nom::combinator::all_consuming;
+
     use super::*;
-    use crate::test_util::{test_full_failed, test_full_ok};
 
     #[test]
     fn top_ident_test() {
-        test_full_ok("Abc", top_ident);
-        test_full_ok("Abc012", top_ident);
-        test_full_ok("A42abcP", top_ident);
-        test_full_ok("Abc", top_ident);
-        test_full_failed("abc", top_ident);
-        test_full_failed("0bc", top_ident);
-        test_full_failed("Abc_", top_ident);
+        all_consuming(top_ident)("Abc").unwrap();
+        all_consuming(top_ident)("Abc012").unwrap();
+        all_consuming(top_ident)("A42abcP").unwrap();
+        all_consuming(top_ident)("abc").unwrap_err();
+        all_consuming(top_ident)("0bc").unwrap_err();
+        all_consuming(top_ident)("Abc_").unwrap_err();
     }
 
     #[test]
     fn ident_test() {
-        test_full_ok("abc", ident);
-        test_full_ok("abc012", ident);
-        test_full_ok("a42abcP", ident);
-        test_full_ok("abc", ident);
-        test_full_failed("Abc", ident);
-        test_full_failed("0bc", ident);
-        test_full_failed("abc_", ident);
+        all_consuming(ident)("abc").unwrap();
+        all_consuming(ident)("abc012").unwrap();
+        all_consuming(ident)("a42abcP").unwrap();
+        all_consuming(ident)("Abc").unwrap_err();
+        all_consuming(ident)("0bc").unwrap_err();
+        all_consuming(ident)("abc_").unwrap_err();
     }
 }

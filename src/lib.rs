@@ -1,10 +1,11 @@
-pub(crate) mod char;
-pub(crate) mod ident;
-pub(crate) mod module;
-pub(crate) mod number;
+use nom_supreme::error::ErrorTree;
 
-#[cfg(test)]
-pub(crate) mod test_util;
+pub mod char;
+pub mod enumerated;
+pub mod field;
+pub mod ident;
+pub mod module;
+pub mod number;
 
 type In<'a> = &'a str;
-type Res<'a, O> = nom::IResult<In<'a>, O>;
+type Res<'a, O> = nom::IResult<In<'a>, O, ErrorTree<In<'a>>>;

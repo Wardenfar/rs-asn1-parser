@@ -1,36 +1,42 @@
 use nom::branch::alt;
-use nom::bytes::complete::tag;
-use nom::combinator::{map, opt, success};
-use nom::multi::{separated_list0};
+use nom::combinator::{map, opt};
+use nom::multi::separated_list0;
 use nom::sequence::{delimited, pair, preceded, terminated, tuple};
+use nom_supreme::tag::complete::tag;
+use nom_supreme::ParserExt;
+use serde::{Deserialize, Serialize};
 
 use crate::char::{space, space_tag};
+use crate::field::{top_field, TopField};
 use crate::ident::{ident, top_ident, Ident};
 use crate::number::number;
 use crate::{In, Res};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Module {
-    name: Ident,
-    header: Option<ModuleHeader>,
+    pub name: Ident,
+    pub header: Option<ModuleHeader>,
+    pub body: ModuleBody,
 }
 
-#[derive(Debug, Clone)]
-pub struct ModuleBody {}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ModuleBody {
+    pub top_fields: Vec<TopField>,
+}
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ModuleHeader {
-    keys: Vec<HeaderKey>,
+    pub keys: Vec<HeaderKey>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum HeaderKey {
     Named(Ident),
     Number(u64),
     NamedNumber(Ident, u64),
 }
 
-pub(crate) fn module(input: In) -> Res<Module> {
+pub fn module(input: In) -> Res<Module> {
     let p = tuple((
         delimited(space, top_ident, space),
         opt(module_header),
@@ -39,15 +45,17 @@ pub(crate) fn module(input: In) -> Res<Module> {
         space_tag("BEGIN"),
         terminated(module_body, space),
         space_tag("END"),
-    ));
+    ))
+    .all_consuming();
 
-    map(p, |(name, header, _, _, _, _body, _)| Module {
+    map(p, |(name, header, _, _, _, body, _)| Module {
         name,
         header,
+        body,
     })(input)
 }
 
-pub(crate) fn module_header(input: In) -> Res<ModuleHeader> {
+pub fn module_header(input: In) -> Res<ModuleHeader> {
     map(
         delimited(
             space_tag("{"),
@@ -58,7 +66,7 @@ pub(crate) fn module_header(input: In) -> Res<ModuleHeader> {
     )(input)
 }
 
-pub(crate) fn header_key(input: In) -> Res<HeaderKey> {
+pub fn header_key(input: In) -> Res<HeaderKey> {
     let named_number = map(
         pair(
             ident,
@@ -71,26 +79,9 @@ pub(crate) fn header_key(input: In) -> Res<HeaderKey> {
     alt((named_number, named, num))(input)
 }
 
-pub(crate) fn module_body(input: In) -> Res<ModuleBody> {
-    success(ModuleBody {})(input)
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::test_util::test_full_ok;
-
-    use super::*;
-
-    #[test]
-    fn test_module() {
-        let m = test_full_ok(include_str!("../resources/00-empty-OK.asn1"), module);
-        assert_eq!(m.name.as_str(), "ModuleTestEmpty");
-        assert!(m.header.is_none());
-
-        let m = test_full_ok(include_str!("../resources/01-empty-OK.asn1"), module);
-        assert_eq!(m.name.as_str(), "ModuleTestEmpty");
-        assert!(m.header.is_some());
-        let header = m.header.unwrap();
-        assert_eq!(header.keys.len(), 11)
-    }
+pub fn module_body(input: In) -> Res<ModuleBody> {
+    map(
+        separated_list0(space, top_field).context("module body"),
+        |top_fields| ModuleBody { top_fields },
+    )(input)
 }
