@@ -11,3 +11,15 @@ fn enum_err_1() {
     let e = parse_asn1_file(include_str!("../resources/enum-err-1.asn1")).unwrap_err();
     insta::assert_display_snapshot!(e)
 }
+
+#[test]
+fn enum_err_2() {
+    let e = parse_asn1_file(include_str!("../resources/enum-err-2.asn1")).unwrap_err();
+    insta::assert_display_snapshot!(e)
+}
+
+#[test]
+fn enum_err_3() {
+    let e = parse_asn1_file(include_str!("../resources/enum-err-3.asn1")).unwrap_err();
+    insta::assert_display_snapshot!(e)
+}

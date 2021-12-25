@@ -34,6 +34,8 @@ where
 pub enum Asn1ParserError {
     #[error("Two items of the same enum conflict values")]
     EnumConflictValue(i64, String, String),
+    #[error("Two items of the same enum conflict names")]
+    EnumConflictName(String),
     #[error("Enum extensions must be ordered")]
     EnumExtensionOrder,
     #[error("Parsing Error")]

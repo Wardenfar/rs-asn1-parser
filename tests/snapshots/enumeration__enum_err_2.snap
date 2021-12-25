@@ -1,0 +1,7 @@
+---
+source: tests/enumeration.rs
+assertion_line: 18
+expression: e
+
+---
+Two items of the same enum conflict values

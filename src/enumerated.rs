@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use nom::branch::alt;
 use nom::combinator::map;
@@ -55,21 +55,27 @@ fn enum_item(input: In) -> Res<EnumItem> {
 
 impl Validation for Enumerated {
     fn check(&self) -> ValidRes<()> {
-        let mut result: HashMap<i64, &Ident> = HashMap::new();
+        let mut names = HashSet::new();
+        let mut value_pairs: HashMap<i64, &Ident> = HashMap::new();
 
         for (idx, item) in self.items.iter().enumerate() {
             let (val, name) = match item {
                 EnumItem::Name(name) => (idx as i64, name),
                 EnumItem::NamedNumber(name, val) => (*val, name),
             };
-            if let Some(conflict) = result.get(&val) {
+            if names.contains(name.as_str()) {
+                return Err(Asn1ParserError::EnumConflictName(name.as_str().into()));
+            } else {
+                names.insert(name.as_str());
+            }
+            if let Some(conflict) = value_pairs.get(&val) {
                 return Err(Asn1ParserError::EnumConflictValue(
                     val,
                     name.as_str().into(),
                     conflict.as_str().into(),
                 ));
             } else {
-                result.insert(val, name);
+                value_pairs.insert(val, name);
             }
         }
         Ok(())
