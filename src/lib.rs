@@ -7,6 +7,7 @@ pub(crate) mod char;
 pub mod enumerated;
 pub mod field;
 pub mod ident;
+pub mod integer;
 pub mod module;
 pub mod number;
 pub mod validation;

@@ -51,7 +51,10 @@ pub(crate) fn ident(input: In) -> Res<Ident> {
 }
 
 fn is_ident(c: char) -> bool {
-    c.is_alphanum()
+    match c {
+        '-' => true,
+        c => c.is_alphanum(),
+    }
 }
 
 #[cfg(test)]

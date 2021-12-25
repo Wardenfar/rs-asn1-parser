@@ -10,7 +10,6 @@ use nom_supreme::ParserExt;
 use serde::{Deserialize, Serialize};
 
 use crate::char::{space, space_tag};
-use crate::field::FieldKind;
 use crate::ident::{ident, Ident};
 use crate::number::signed_number;
 use crate::validation::Validation;
@@ -27,7 +26,7 @@ pub enum EnumItem {
     NamedNumber(Ident, i64),
 }
 
-pub(crate) fn enumerated(input: In) -> Res<FieldKind> {
+pub(crate) fn enumerated(input: In) -> Res<Enumerated> {
     map(
         delimited(
             space_tag("{"),
@@ -35,7 +34,7 @@ pub(crate) fn enumerated(input: In) -> Res<FieldKind> {
             preceded(space, tag("}")),
         )
         .context("enum"),
-        |items| FieldKind::Enum(Enumerated { items }),
+        |items| Enumerated { items },
     )(input)
 }
 
