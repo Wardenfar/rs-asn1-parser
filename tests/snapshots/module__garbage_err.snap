@@ -1,0 +1,7 @@
+---
+source: tests/module.rs
+assertion_line: 12
+expression: e
+
+---
+Parsing Error

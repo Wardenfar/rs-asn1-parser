@@ -1,0 +1,8 @@
+ModuleTestEnum1 { test(5) abc } DEFINITIONS ::=
+BEGIN
+	Enum1 ::= ENUMERATED {
+	    red,
+	    green,
+		blue(1) -- collides with green --
+	}
+END

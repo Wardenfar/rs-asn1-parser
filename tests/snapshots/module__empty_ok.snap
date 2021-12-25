@@ -1,0 +1,15 @@
+---
+source: tests/module.rs
+assertion_line: 6
+expression: m
+
+---
+{
+  "name": {
+    "name": "ModuleTestEmpty"
+  },
+  "header": null,
+  "body": {
+    "top_fields": []
+  }
+}

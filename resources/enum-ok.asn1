@@ -1,0 +1,22 @@
+ModuleTestEnum1 { test(5) abc } DEFINITIONS ::=
+BEGIN
+	Enum1 ::= ENUMERATED {
+	    red,	-- will be 0 --
+		green,	-- will be 1 --
+		blue(4),
+		alpha    -- will be 3 --
+	}
+
+	Enum2 ::= ENUMERATED {
+	    red,	-- will be 0 --
+		green,	-- will be 1 --
+		blue(45),
+		orange(23),
+		alpha   -- will be 4 --
+	}
+
+	Enum3 ::= ENUMERATED { a, b(3), c(1) }
+	Enum4 ::= ENUMERATED { a, b, c(3), d(4) }
+	Enum5 ::= ENUMERATED { a, z(25), d }
+
+END

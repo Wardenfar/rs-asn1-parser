@@ -1,0 +1,206 @@
+---
+source: tests/enumeration.rs
+assertion_line: 6
+expression: m
+
+---
+{
+  "name": {
+    "name": "ModuleTestEnum1"
+  },
+  "header": {
+    "keys": [
+      {
+        "NamedNumber": [
+          {
+            "name": "test"
+          },
+          5
+        ]
+      },
+      {
+        "Named": {
+          "name": "abc"
+        }
+      }
+    ]
+  },
+  "body": {
+    "top_fields": [
+      {
+        "name": {
+          "name": "Enum1"
+        },
+        "kind": {
+          "Enum": {
+            "items": [
+              {
+                "Name": {
+                  "name": "red"
+                }
+              },
+              {
+                "Name": {
+                  "name": "green"
+                }
+              },
+              {
+                "NamedNumber": [
+                  {
+                    "name": "blue"
+                  },
+                  4
+                ]
+              },
+              {
+                "Name": {
+                  "name": "alpha"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": {
+          "name": "Enum2"
+        },
+        "kind": {
+          "Enum": {
+            "items": [
+              {
+                "Name": {
+                  "name": "red"
+                }
+              },
+              {
+                "Name": {
+                  "name": "green"
+                }
+              },
+              {
+                "NamedNumber": [
+                  {
+                    "name": "blue"
+                  },
+                  45
+                ]
+              },
+              {
+                "NamedNumber": [
+                  {
+                    "name": "orange"
+                  },
+                  23
+                ]
+              },
+              {
+                "Name": {
+                  "name": "alpha"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": {
+          "name": "Enum3"
+        },
+        "kind": {
+          "Enum": {
+            "items": [
+              {
+                "Name": {
+                  "name": "a"
+                }
+              },
+              {
+                "NamedNumber": [
+                  {
+                    "name": "b"
+                  },
+                  3
+                ]
+              },
+              {
+                "NamedNumber": [
+                  {
+                    "name": "c"
+                  },
+                  1
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": {
+          "name": "Enum4"
+        },
+        "kind": {
+          "Enum": {
+            "items": [
+              {
+                "Name": {
+                  "name": "a"
+                }
+              },
+              {
+                "Name": {
+                  "name": "b"
+                }
+              },
+              {
+                "NamedNumber": [
+                  {
+                    "name": "c"
+                  },
+                  3
+                ]
+              },
+              {
+                "NamedNumber": [
+                  {
+                    "name": "d"
+                  },
+                  4
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": {
+          "name": "Enum5"
+        },
+        "kind": {
+          "Enum": {
+            "items": [
+              {
+                "Name": {
+                  "name": "a"
+                }
+              },
+              {
+                "NamedNumber": [
+                  {
+                    "name": "z"
+                  },
+                  25
+                ]
+              },
+              {
+                "Name": {
+                  "name": "d"
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}
